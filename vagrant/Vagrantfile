@@ -10,18 +10,28 @@ Vagrant.configure("2") do |config|
   config.vm.provision :docker
 
   # Server 1
-  config.vm.define "ci-server" do |ciserver|
-    ciserver.vm.network "private_network", ip: '192.168.56.60'
-    ciserver.vm.hostname = "ci-server"
-    ciserver.vm.provision :docker_compose
-    ciserver.vm.provision :file, source: "../docker/docker-compose.ci.yml", destination: "docker-compose.yml"
-    ciserver.vm.provision :docker_compose, yml:"/home/vagrant/docker-compose.yml", run: "always"
-    ciserver.vm.provision :shell, inline: "sudo chmod 777 /var/run/docker.sock"
+  config.vm.define "server1" do |server1|
+    server1.vm.network "private_network", ip: '192.168.56.60'
+    server1.vm.hostname = "ci-server"
+    server1.vm.provision :docker_compose
+    server1.vm.provision :file, source: "../docker/docker-compose.ci.yml", destination: "docker-compose.yml"
+    server1.vm.provision :docker_compose, yml:"/home/vagrant/docker-compose.yml", run: "always"
+    server1.vm.provision :shell, inline: "sudo chmod 777 /var/run/docker.sock"
   end
 
-  # Server 1
+  # Server 2
   config.vm.define "server2" do |server2|
     server2.vm.network "private_network", ip: '192.168.56.61'
     server2.vm.hostname = "server2"
+  end
+
+  # Server 3
+  config.vm.define "server3" do |server3|
+    server3.vm.network "private_network", ip: '192.168.56.62'
+    server3.vm.hostname = "server2"
+    server3.vm.provision :docker_compose
+    server3.vm.provision :file, source: "../docker/docker-compose.ci.yml", destination: "docker-compose.yml"
+    server3.vm.provision :docker_compose, yml:"/home/vagrant/docker-compose.yml", run: "always"
+    server3.vm.provision :shell, inline: "sudo chmod 777 /var/run/docker.sock"
   end
 end
